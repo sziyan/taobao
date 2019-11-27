@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, IntegerField
+from wtforms import StringField, PasswordField, IntegerField, DecimalField
 from wtforms.validators import DataRequired
 
 
@@ -10,6 +10,6 @@ class LoginForm(FlaskForm):
     password2 = PasswordField('Enter password again', validators=[DataRequired()])
 
 class OrderForm(FlaskForm):
-    orderno = IntegerField("Order Number", validators=[DataRequired()])
-    amount = IntegerField("Amount", validators=[DataRequired()])
+    order_id = IntegerField("Order Number", validators=[DataRequired()])
+    amount = DecimalField("Amount", validators=[DataRequired()])
     status = StringField("Status", validators=[DataRequired()])
