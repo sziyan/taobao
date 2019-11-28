@@ -1,11 +1,8 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block content %}
 
-{% if current_user.is_authenticated %}
-<h3>Welcome {{current_user.name}}</h3>
-{% endif %}
-
+<h3>{{current_user.name}} Orders</h3>
 <table class="table">
   <thead>
     <tr>
@@ -13,7 +10,6 @@
       <th scope="col">Amount(SGD)</th>
       <th scope="col">Shipping(SGD)</th>
       <th scope="col">Status</th>
-      <th scope="col">Buyer</th>
     </tr>
   </thead>
 
@@ -28,10 +24,8 @@
       <td>{{ order.ship_amount}}</td>
       {% endif %}
       <td>{{ order.status}}</td>
-      <td>{{ order.user_name}}</td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
-
-{%endblock %}
+{% endblock %}
