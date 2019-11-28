@@ -1,1 +1,1 @@
-web: gunicorn app:taobao 
+web: gunicorn taobao:app
