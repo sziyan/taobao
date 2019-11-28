@@ -11,8 +11,7 @@ class LoginForm(FlaskForm):
 class OrderForm(FlaskForm):
     order_id = IntegerField("Order Number", validators=[DataRequired()])
     amount = DecimalField("Amount", validators=[DataRequired()])
-    #status = StringField("Status", validators=[DataRequired()])
-    status = SelectField(u'Status', choices=[('paid', 'Paid'), ('not_paid', 'Not Paid')], validators=[DataRequired()])
+    status = SelectField(u'Status', choices=[('paid', 'Paid'), ('pending', 'Pending')], validators=[DataRequired()])
     submit = SubmitField('Add Order')
 
 class RegisterForm(FlaskForm):
