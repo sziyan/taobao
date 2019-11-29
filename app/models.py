@@ -10,7 +10,7 @@ def load_user(id):
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
-    name = db.Column(db.String(64), index=True, unique=True)
+    name = db.Column(db.String(64), index=True)
     password_hash = db.Column(db.String(128))
     orders = db.relationship('Orders', backref='buyer', lazy='dynamic')
 
@@ -26,7 +26,7 @@ class User(UserMixin, db.Model):
 
 class Orders(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    order_id = db.Column(db.Integer, unique=True, index=True)
+    order_id = db.Column(db.Integer, unique=True, index=True, nullable=True)
     amount = db.Column(db.Float)
     ship_amount = db.Column(db.Float)
     status = db.Column(db.String(64))

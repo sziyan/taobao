@@ -16,7 +16,11 @@
   <tbody>
     {% for order in orders %}
     <tr>
+      {% if order.order_id == None %}
+      <td></td>
+      {% else %}
       <td><a target="_blank" href="https://pcs.i56.taobao.com/user/consolidation/conso_order_detail?tradeId={{ order.order_id }}">{{ order.order_id }}</a></td>
+      {% endif %}
       <td>{{ order.amount }}</td>
       {% if order.ship_amount == None %}
       <td></td>

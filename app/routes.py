@@ -58,10 +58,21 @@ def add_order():
     form = OrderForm()
     if form.validate_on_submit():
         status = dict(form.status.choices).get(form.status.data)
-        order = Orders(order_id=form.order_id.data, amount=form.amount.data, status=status, buyer=current_user)
-        db.session.add(order)
-        db.session.commit()
-        flash("Order added")
+        buyer = User.query.filter_by(username=form.buyer.data).first()
+        if form.order_id.data is None: #submit empty order number
+            order = Orders(amount=form.amount.data, status=status, buyer=buyer)
+            db.session.add(order)
+            db.session.commit()
+            flash("Order added")
+            return redirect(url_for('add_order'))
+        exist_order = Orders.query.filter_by(order_id=form.order_id.data).first()  #search if order number exists in database
+        if exist_order is None: #if does not exist in database
+            order = Orders(order_id=form.order_id.data,amount=form.amount.data, status=status, buyer=buyer)
+            db.session.add(order)
+            db.session.commit()
+            flash("Order added")
+            return redirect(url_for('add_order'))
+        flash("Order number exists in database.")
         return redirect(url_for('add_order'))
     return render_template('add_order.html', form=form)
 
