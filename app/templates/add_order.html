@@ -2,15 +2,26 @@
 
 {% block content %}
 
-<h1>Adding orders</h1>
+<h3>Adding orders</h3>
 
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-success col-sm-4" role="alert">
+{{ message }}
+</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<hr>
 <form action="" method="post">
   {{ form.hidden_tag() }}
   {{ form.csrf_token }}
 
   <div class="form-group">
-    <label for="order_id">{{ form.order_id.label }}</label>
-    {{ form.order_id(class="form-control col-sm-4",id="order_id") }}
+    <label for="buyer">{{ form.buyer.label}}</label>
+    {{form.buyer(class="form-control col-sm-4", id="buyer")}}
   </div>
 
   <div class="form-group">
@@ -19,27 +30,12 @@
   </div>
 
   <div class="form-group">
-    <label for="buyer">{{ form.buyer.label}}</label>
-    {{form.buyer(class="form-control col-sm-4", id="buyer")}}
-  </div>
-
-  <div class="form-group">
-    <label for="status">{{ form.status.label}}</label>
-    {{form.status(class="form-control col-sm-4", id="status")}}
+    <label for="order_status">{{ form.order_status.label}}</label>
+    {{form.order_status(class="form-control col-sm-4", id="order_status")}}
   </div>
   <br>
   {{form.submit(class="btn btn-primary")}}
 
   </form>
-
-  {% with messages = get_flashed_messages() %}
-  {% if messages %}
-  {% for message in messages %}
-  <div class="alert alert-success col-sm-4" role="alert">
-  {{ message }}
-  </div>
-  {% endfor %}
-  {% endif %}
-  {% endwith %}
 
 {% endblock %}

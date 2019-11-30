@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if order.order_id == None %}
+<p></p>
+{% else %}
+<p>Order ID: {{order.order_id }}
+{% endif %}
+<p>Buyer: {{order.buyer.name}}</p>
+<p>Amount: {{order.amount}}</p>
+<p>Status: {{order.order_status}}</p>
+{% if order.ship_amount == None %}
+<p>Shipping Amount:</p>
+{% else %}
+<p>Shipping Amount: {{order.ship_amount}}</p>
+{% endif %}
+{% if order.ship_status == None %}
+<p>Shipping Status: Not Paid </p>
+{% else %}
+<p>Shipping Status:{{order.ship_status}}</p>
+{% endif %}
+<hr>
+
+<form action="" method="post">
+  {{ form.hidden_tag() }}
+
+  <div class="form-group">
+    <label for="order_id">{{ form.order_id.label }}</label>
+    {{ form.order_id(class="form-control col-sm-4",id="order_id") }}
+  </div>
+
+  <div class="form-group">
+    <label for="ship_amount">{{ form.ship_amount.label }}</label>
+    {{ form.ship_amount(class="form-control col-sm-4",id="ship_amount") }}
+  </div>
+
+  <div class="form-group">
+    <label for="ship_status">{{ form.ship_status.label }}</label>
+    {{ form.ship_status(class="form-control col-sm-4",id="ship_status") }}
+  </div>
+  {{form.submit(class="btn btn-primary")}}
+
+</form>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-success col-sm-4" role="alert">
+{{ message }}
+</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+{% endblock %}

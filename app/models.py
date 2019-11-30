@@ -28,8 +28,9 @@ class Orders(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     order_id = db.Column(db.Integer, unique=True, index=True, nullable=True)
     amount = db.Column(db.Float)
-    ship_amount = db.Column(db.Float)
-    status = db.Column(db.String(64))
+    order_status = db.Column(db.String(64))
+    ship_amount = db.Column(db.Float, nullable=True)
+    ship_status = db.Column(db.String(64), nullable=True)
     user_name = db.Column(db.Integer, db.ForeignKey('user.username'))
 
     def __repr__(self):

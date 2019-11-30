@@ -2,9 +2,9 @@
 
 {% block content %}
 
-{% if current_user.is_authenticated %}
-<h3>Welcome {{current_user.name}}</h3>
-{% endif %}
+<h3>Taobao Orders</h3>
+
+
 
 <div class= "table-responsive-lg">
 <table class="table table-hover">
@@ -12,28 +12,39 @@
     <tr>
       <th scope="col">Order ID</th>
       <th scope="col">Amount(SGD)</th>
-      <th scope="col">Shipping(SGD)</th>
       <th scope="col">Status</th>
+      <th scope="col">Shipping(SGD)</th>
+      <th scope="col">Shipping Status</th>
       <th scope="col">Buyer</th>
     </tr>
   </thead>
 
   <tbody>
     {% for order in orders %}
-    <tr>
+    <tr> <!-- Order ID -->
       {% if order.order_id == None %}
       <td></td>
       {% else %}
       <td><a target="_blank" href="https://pcs.i56.taobao.com/user/consolidation/conso_order_detail?tradeId={{ order.order_id }}">{{ order.order_id }}</a></td>
       {% endif %}
+      <!-- Order Amount -->
       <td>{{ order.amount }}</td>
+      <!-- Status -->
+      <td>{{ order.order_status}}</td>
+      <!-- Ship amount -->
       {% if order.ship_amount == None %}
-      <td></td>
+      <td><a href = "/edit/{{order.id}}">Click here to update</a></td>
       {% else %}
       <td>{{ order.ship_amount}}</td>
       {% endif %}
-      <td>{{ order.status}}</td>
-      <td>{{ order.user_name}}</td>
+      <!-- Shipping status -->
+      {% if order.ship_status == None or order.ship_status == "Not Paid" %}
+      <td><a href = "/edit/{{order.id}}">Not Paid</a></td>
+      {% else %}
+      <td>{{order.ship_status}}</td>
+      {% endif %}
+      <!-- Buyer name -->
+      <td>{{order.buyer.name}}
     </tr>
     {% endfor %}
   </tbody>
