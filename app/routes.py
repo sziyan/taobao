@@ -95,3 +95,14 @@ def orders():
     buyer_orders = user.orders
     return render_template('orders.html',orders=buyer_orders)
 
+@app.route("/reset")
+@login_required
+def reset():
+    if not current_user.username == 'sziyan':
+        return redirect(url_for('index'))
+    entry1 = Orders.query.filter_by(id=2).first()
+    db.session.delete(entry1)
+    entry2 = Order.query.filter_by(id=2).first()
+    db.session.delete(entry2)
+    db.session.commt()
+    return redirect(url_for('add_order'))
