@@ -106,3 +106,11 @@ def reset():
     db.session.delete(entry2)
     db.session.commt()
     return redirect(url_for('add_order'))
+
+@app.route("/admin")
+@login_required
+def admin():
+    if not current_user.isAdmin == 1:
+        return redirect(url_for('index'))
+    else:
+        return render_template('admin.html')

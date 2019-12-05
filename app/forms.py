@@ -29,3 +29,8 @@ class RegisterForm(FlaskForm):
     password = PasswordField('Password', validators=[InputRequired()])
     password2 = PasswordField('Enter password again', validators=[InputRequired()])
     submit = SubmitField('Register')
+
+class AddUser(FlaskForm):
+    username = StringField('Username', validators=[InputRequired()])
+    name = StringField('Name', validators=[Optional()])
+    submit = SubmitField('Add User')
