@@ -10,17 +10,17 @@ db.session.add(yishan)
 
 #yihui
 yihui = User(username="yihui", name="Yi Hui")
-yishan.set_password('P@ssw0rd')
+yihui.set_password('P@ssw0rd')
 db.session.add(yihui)
 
 #sooklau
 sooklau = User(username="sooklau", name="Sook Lau")
-yishan.set_password('P@ssw0rd')
+sooklau.set_password('P@ssw0rd')
 db.session.add(sooklau)
 
 #all
 all = User(username="all", name="All")
-yishan.set_password('P@ssw0rd')
+all.set_password('P@ssw0rd')
 db.session.add(all)
 
 #add to database
