@@ -1,6 +1,6 @@
 from app import app, db
 from flask import render_template,redirect, url_for, flash
-from app.forms import LoginForm, OrderForm, RegisterForm, ShippingForm
+from app.forms import LoginForm, OrderForm, RegisterForm, ShippingForm, AddUser, EditUserForm, DeleteUserForm, DeleteOrderForm
 from flask_login import current_user, login_user,login_required,logout_user
 from app.models import User, Orders
 
@@ -19,7 +19,7 @@ def register():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None and form.password.data == form.password2.data:
-            new_user = User(username=form.username.data, name=form.name.data)
+            new_user = User(username=form.username.data, name=form.name.data, isAdmin=False)
             new_user.set_password(form.password.data)
             db.session.add(new_user)
             db.session.commit()
@@ -76,8 +76,11 @@ def add_order():
 def edit(id):
     order = Orders.query.filter_by(id=id).first()
     form = ShippingForm()
+    delete_order_form = DeleteOrderForm()
+    order_form = OrderForm()
+
     ship_status = dict(form.ship_status.choices).get(form.ship_status.data)
-    if form.validate_on_submit():
+    if form.shipping_submit.data and form.validate():
         if form.order_id.data is not None:
             order.order_id = form.order_id.data
         if form.ship_amount.data is not None:
@@ -86,7 +89,24 @@ def edit(id):
             order.ship_status = ship_status
         db.session.commit()
         flash("Shipping info updated")
-    return render_template('edit.html', order=order, form=form)
+        return redirect(url_for("edit",id=id))
+    if delete_order_form.delete_order_submit.data and delete_order_form.validate():
+        db.session.delete(order)
+        db.session.commit()
+        flash("Order deleted", "success")
+        return redirect(url_for('index'))
+    if order_form.order_submit.data and order_form.validate():
+        print("Status: {}".format(order_form.order_status.data))
+        print("Amount: {}".format(order_form.amount.data))
+        if order_form.order_status.data != "":
+            order.order_status = dict(order_form.order_status.choices).get(order_form.order_status.data)
+        if order_form.amount != "":
+            order.amount = order_form.amount.data
+        db.session.commit()
+        flash("Order details updated")
+        return redirect(url_for("edit",id=id))
+
+    return render_template('edit.html', order=order, form=form, delete_order_form=delete_order_form,order_form=order_form)
 
 @app.route("/orders")
 @login_required
@@ -95,22 +115,50 @@ def orders():
     buyer_orders = user.orders
     return render_template('orders.html',orders=buyer_orders)
 
-@app.route("/reset")
-@login_required
-def reset():
-    if not current_user.username == 'sziyan':
-        return redirect(url_for('index'))
-    entry1 = Orders.query.filter_by(id=2).first()
-    db.session.delete(entry1)
-    entry2 = Order.query.filter_by(id=2).first()
-    db.session.delete(entry2)
-    db.session.commt()
-    return redirect(url_for('add_order'))
-
-@app.route("/admin")
+@app.route("/admin", methods=['GET', 'POST'])
 @login_required
 def admin():
     if not current_user.isAdmin == 1:
         return redirect(url_for('index'))
     else:
-        return render_template('admin.html')
+        add_user_form = AddUser()
+        edit_user_form = EditUserForm()
+        delete_user_form = DeleteUserForm()
+        if add_user_form.add_user_submit.data and add_user_form.validate():
+            user = User(username=add_user_form.username.data, name=add_user_form.name.data, isAdmin=False)
+            db.session.add(user)
+            db.session.commit()
+            flash("User added.", "success")
+            return redirect(url_for('admin'))
+
+        edit_user_form.update_choices()
+        if edit_user_form.edit_submit.data and edit_user_form.validate():
+            user = User.query.filter_by(username=edit_user_form.username.data).first()
+            if user is None:
+                flash("Unable to find username in database", "danger")
+                return redirect(url_for("admin"))
+            if edit_user_form.name.data != "":
+                user.name = edit_user_form.name.data
+                db.session.commit()
+                edit_user_form.update_choices()
+                flash("User details updated.", "success")
+                return redirect(url_for("admin"))
+            if edit_user_form.password.data != "":
+                if edit_user_form.password.data == edit_user_form.password2.data:
+                    print(edit_user_form.password.data)
+                    user.set_password(edit_user_form.password.data)
+                    db.session.commit()
+                    flash("User details updated.", 'success')
+                    return redirect(url_for('admin'))
+                else: #password field not empty but password wrong
+                    flash("Password does not match!", "danger")
+                    return redirect(url_for('admin'))
+
+        delete_user_form.update_choices()
+        if delete_user_form.delete_submit.data and delete_user_form.validate():
+            user = User.query.filter_by(username=delete_user_form.username.data).first()
+            db.session.delete(user)
+            db.session.commit()
+            flash("User deleted", "success")
+            return redirect(url_for("admin"))
+        return render_template('admin.html', add_user_form=add_user_form, edit_user_form=edit_user_form,delete_user_form=delete_user_form)

@@ -1,8 +1,104 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<p><b>Admin Panel:</b></p>
+<div id="admin_button">
+<p>
+  <!-- Add User button -->
+<button class="btn btn-success" type="button" data-toggle="collapse" data-target="#add_user" aria-expanded="false" aria-controls="add_user">
+    Add User
+</button>
+<!-- Edit User button -->
+<button class="btn btn-warning" type="button" data-toggle="collapse"  data-target="#edit_user" aria-expanded="false" aria-controls="edit_user">
+    Edit User
+</button>
+<button class="btn btn-danger" type="button" data-toggle="collapse"  data-target="#delete_user" aria-expanded="false" aria-controls="delete_user">
+    Delete User
+</button>
+</p>
 
 
+<!-- "Add user" collapse -->
+<div class="collapse" id="add_user" data-parent="#admin_button">
+  <div class="card card-body">
+    <form action="" method="post">
+      {{ add_user_form.hidden_tag()}}
 
+    <div class="form-group">
+      <label for="username">{{ add_user_form.username.label}}</label>
+      {{add_user_form.username(class="form-control col-sm-4", id="username")}}
+    </div>
+
+    <div class="form-group">
+      <label for="name">{{add_user_form.name.label}}</label>
+      {{add_user_form.name(class="form-control col-sm-4", id="name")}}
+    </div>
+
+      {{add_user_form.add_user_submit(class="btn btn-primary")}}
+  </form>
+  </div>
+</div>
+
+
+<!-- "Edit User" collapse -->
+
+<div class="collapse" id="edit_user" data-parent="#admin_button">
+  <div class="card card-body">
+    <form action="" method="post">
+      {{ edit_user_form.hidden_tag()}}
+
+    <div class="form-group">
+      <label for="username">{{ edit_user_form.username.label}}</label>
+      {{edit_user_form.username(class="form-control col-sm-4", id="username")}}
+    </div>
+
+    <div class="form-group">
+      <label for="name">{{edit_user_form.name.label}}</label>
+      {{edit_user_form.name(class="form-control col-sm-4", id="name")}}
+    </div>
+
+    <div class="form-group">
+      <label for="password1">{{edit_user_form.password.label}}</label>
+      {{edit_user_form.password(class="form-control col-sm-4", id="password1")}}
+    </div>
+
+    <div class="form-group">
+      <label for="password2">{{edit_user_form.password2.label}}</label>
+      {{edit_user_form.password2(class="form-control col-sm-4", id="password2")}}
+    </div>
+      {{edit_user_form.edit_submit(class="btn btn-primary")}}
+  </form>
+  </div>
+</div>
+
+<!-- Delete user collapse -->
+<div class="collapse" id="delete_user" data-parent="#admin_button">
+  <div class="card card-body">
+    <form action="" method="post">
+      {{ delete_user_form.hidden_tag()}}
+
+    <div class="form-group">
+      <label for="username">{{ delete_user_form.username.label}}</label>
+      {{delete_user_form.username(class="form-control col-sm-4", id="username")}}
+    </div>
+      {{delete_user_form.delete_submit(class="btn btn-primary")}}
+  </form>
+  </div>
+</div>
+
+</div>
+
+
+<!-- Flash messages -->
+<br>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+<div class="alert alert-{{category}} col-sm-4" role="alert">
+{{ message }}
+</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
 
 {% endblock %}

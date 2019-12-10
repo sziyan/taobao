@@ -11,8 +11,8 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     name = db.Column(db.String(64), index=True)
-    password_hash = db.Column(db.String(128))
-    isAdmin = db.Column(db.Boolean)
+    password_hash = db.Column(db.String(128), nullable=True)
+    isAdmin = db.Column(db.Boolean, nullable=True)
     orders = db.relationship('Orders', backref='buyer', lazy='dynamic')
 
     def __repr__(self):

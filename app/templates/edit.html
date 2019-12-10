@@ -5,28 +5,68 @@
 {% if order.order_id == None %}
 <p></p>
 {% else %}
-<p>Order ID: {{order.order_id }}
+<p><b>Order ID:</b> {{order.order_id }}</p>
 {% endif %}
-<p>Buyer: {{order.buyer.name}}</p>
-<p>Amount: {{order.amount}}</p>
-<p>Status: {{order.order_status}}</p>
+<p><b>Buyer:</b> {{order.buyer.name}}</p>
+<p><b>Amount:</b> S${{order.amount}}</p>
+<p><b>Status:</b> {{order.order_status}}</p>
 {% if order.ship_amount == None %}
-<p>Shipping Amount:</p>
+<p><b>Shipping Amount:</b></p>
 {% else %}
-<p>Shipping Amount: {{order.ship_amount}}</p>
+<p><b>Shipping Amount:</b> S${{order.ship_amount}}</p>
 {% endif %}
 {% if order.ship_status == None %}
-<p>Shipping Status: Not Paid </p>
+<p><b>Shipping Status:</b> Not Paid </p>
 {% else %}
-<p>Shipping Status:{{order.ship_status}}</p>
+<p><b>Shipping Status:</b> {{order.ship_status}}</p>
 {% endif %}
-<hr>
 
+<!-- Show delete button if logged in user is admin -->
+{%if current_user.isAdmin == True %}
+<p>
+  <button class="btn btn-danger" type="button" data-toggle="collapse" data-target="#delete_order" aria-expanded="false" aria-controls="delete_order">
+    Delete Order
+  </button>
+</p>
+
+<div class="collapse" id="delete_order">
+
+  <div class="card card-body">
+    <p><b>Confirm to delete this order? This action is not reversible!</b></p>
+    <form action="" method="post">
+      {{delete_order_form.hidden_tag()}}
+      <div class="form-group">
+        {{delete_order_form.delete_order_submit(class="btn btn-danger")}}
+        &nbsp
+        <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#delete_order" aria-expanded="false" aria-controls="delete_order">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endif %}
+
+<hr>
+<div id="update_forms">
+<p>
+  <button class="btn btn-danger" type="button" data-toggle="collapse" data-target="#shipping_form" aria-expanded="false" aria-controls="delete_order">
+    Update Shipping Info
+  </button>
+<button class="btn btn-danger" type="button" data-toggle="collapse" data-target="#order_form" aria-expanded="false" aria-controls="delete_order">
+  Update Order Info
+</button>
+</p>
+
+
+<!-- Shipping form -->
+<div class="collapse" id="shipping_form" data-parent="#update_forms">
+  <div class="card card-body">
 <form action="" method="post">
   {{ form.hidden_tag() }}
 
   <div class="form-group">
-    <label for="order_id">{{ form.order_id.label }}</label>
+    <b><label for="order_id">{{ form.order_id.label }}</label></b>
     {{ form.order_id(class="form-control col-sm-4",id="order_id") }}
   </div>
 
@@ -39,9 +79,29 @@
     <label for="ship_status">{{ form.ship_status.label }}</label>
     {{ form.ship_status(class="form-control col-sm-4",id="ship_status") }}
   </div>
-  {{form.submit(class="btn btn-primary")}}
-
+  {{form.shipping_submit(class="btn btn-primary")}}
 </form>
+</div>
+</div>
+
+<!-- Order form -->
+<div class="collapse" id="order_form" data-parent="#update_forms">
+  <div class="card card-body">
+<form action="" method="post">
+  <div class="form-group">
+    <label for="amount">{{order_form.amount.label}}</label>
+    {{order_form.amount(class="form-control col-sm-4",id="amount")}}
+  </div>
+
+  <div class="form-group">
+    <label for="order_status">{{order_form.order_status.label}}</label>
+    {{order_form.order_status(class="form-control col-sm-4",id="order_status")}}
+  </div>
+{{order_form.order_submit(class="btn btn-primary")}}
+</form>
+</div>
+</div>
+</div>
 
 {% with messages = get_flashed_messages() %}
 {% if messages %}
