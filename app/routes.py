@@ -88,7 +88,7 @@ def edit(id):
         if form.ship_status.data is not None:
             order.ship_status = ship_status
         db.session.commit()
-        flash("Shipping info updated")
+        flash("Shipping info updated", "success")
         return redirect(url_for("edit",id=id))
     if delete_order_form.delete_order_submit.data and delete_order_form.validate():
         db.session.delete(order)
@@ -98,12 +98,11 @@ def edit(id):
     if order_form.order_submit.data and order_form.validate():
         print("Status: {}".format(order_form.order_status.data))
         print("Amount: {}".format(order_form.amount.data))
-        if order_form.order_status.data != "":
-            order.order_status = dict(order_form.order_status.choices).get(order_form.order_status.data)
+        order.order_status = dict(order_form.order_status.choices).get(order_form.order_status.data)
         if order_form.amount != "":
             order.amount = order_form.amount.data
         db.session.commit()
-        flash("Order details updated")
+        flash("Order details updated", "success")
         return redirect(url_for("edit",id=id))
 
     return render_template('edit.html', order=order, form=form, delete_order_form=delete_order_form,order_form=order_form)
