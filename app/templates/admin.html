@@ -25,7 +25,7 @@
       {{ add_user_form.hidden_tag()}}
 
     <div class="form-group">
-      <label for="username">{{ add_user_form.username.label}}</label>
+      <label for="username">{{ add_user_form.username.label}}<span style="color:red"> *</span></label>
       {{add_user_form.username(class="form-control col-sm-4", id="username")}}
     </div>
 

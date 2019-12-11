@@ -50,10 +50,10 @@
 <hr>
 <div id="update_forms">
 <p>
-  <button class="btn btn-danger" type="button" data-toggle="collapse" data-target="#shipping_form" aria-expanded="false" aria-controls="delete_order">
+  <button class="btn btn-success" type="button" data-toggle="collapse" data-target="#shipping_form" aria-expanded="false" aria-controls="delete_order">
     Update Shipping Info
   </button>
-<button class="btn btn-danger" type="button" data-toggle="collapse" data-target="#order_form" aria-expanded="false" aria-controls="delete_order">
+<button class="btn btn-success" type="button" data-toggle="collapse" data-target="#order_form" aria-expanded="false" aria-controls="delete_order">
   Update Order Info
 </button>
 </p>
@@ -88,6 +88,8 @@
 <div class="collapse" id="order_form" data-parent="#update_forms">
   <div class="card card-body">
 <form action="" method="post">
+
+  {{ order_form.hidden_tag() }}
   <div class="form-group">
     <label for="amount">{{order_form.amount.label}}</label>
     {{order_form.amount(class="form-control col-sm-4",id="amount")}}
@@ -102,7 +104,7 @@
 </div>
 </div>
 </div>
-
+<br>
 {% with messages = get_flashed_messages() %}
 {% if messages %}
 {% for message in messages %}

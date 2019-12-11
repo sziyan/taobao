@@ -57,12 +57,13 @@ def logout():
 def add_order():
     form = OrderForm()
     choice = []
-    users = User.query.all()
-    for u in users:
-        label = u.name
-        value = u.username
-        choice.append((value,label))
-    form.buyer.choices = choice
+    # users = User.query.all()
+    # for u in users:
+    #     label = u.name
+    #     value = u.username
+    #     choice.append((value,label))
+    # form.buyer.choices = choice
+    form.update_choices()
     if form.validate_on_submit():
         order_status = dict(form.order_status.choices).get(form.order_status.data)
         buyer = User.query.filter_by(username=form.buyer.data).first()
@@ -80,6 +81,7 @@ def edit(id):
     order_form = OrderForm()
 
     ship_status = dict(form.ship_status.choices).get(form.ship_status.data)
+
     if form.shipping_submit.data and form.validate():
         if form.order_id.data is not None:
             order.order_id = form.order_id.data
@@ -96,10 +98,8 @@ def edit(id):
         flash("Order deleted", "success")
         return redirect(url_for('index'))
     if order_form.order_submit.data and order_form.validate():
-        print("Status: {}".format(order_form.order_status.data))
-        print("Amount: {}".format(order_form.amount.data))
         order.order_status = dict(order_form.order_status.choices).get(order_form.order_status.data)
-        if order_form.amount != "":
+        if order_form.amount.data is not None:
             order.amount = order_form.amount.data
         db.session.commit()
         flash("Order details updated", "success")

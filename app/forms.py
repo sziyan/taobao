@@ -10,7 +10,7 @@ class LoginForm(FlaskForm):
 
 class OrderForm(FlaskForm):
     amount = DecimalField("Amount(SGD)", validators=[Optional()])
-    order_status = SelectField(u'Status', choices=[('paid', 'Paid'), ('pending', 'Pending')], validators=[Optional()])
+    order_status = SelectField(u'Status', choices=[('paid', 'Paid'), ('not_paid', 'Not Paid')], validators=[Optional()])
     buyer = SelectField(u'Buyer', choices=[], validators=[Optional()])
     order_submit = SubmitField('Add Order')
 
@@ -60,9 +60,10 @@ class DeleteUserForm(FlaskForm):
         new_choice = []
         all_users = User.query.all()
         for u in all_users:
-            label = u.name
-            value = u.username
-            new_choice.append((value, label))
+            if u.isAdmin is False:
+                label = u.name
+                value = u.username
+                new_choice.append((value, label))
         self.username.choices = new_choice
 
 class AddUser(FlaskForm):
