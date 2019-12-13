@@ -88,6 +88,7 @@ def add_order():
             flash("Sent telegram message successfully", 'success')
         else:
             flash("Error sending telegram message", 'danger')
+        return redirect(url_for('add_order'))
     return render_template('add_order.html', form=form)
 
 @app.route("/edit/<id>", methods=['GET', 'POST'])
