@@ -3,6 +3,18 @@ from flask import render_template,redirect, url_for, flash
 from app.forms import LoginForm, OrderForm, RegisterForm, ShippingForm, AddUser, EditUserForm, DeleteUserForm, DeleteOrderForm
 from flask_login import current_user, login_user,login_required,logout_user
 from app.models import User, Orders
+import requests
+#from app.telegram import test
+TOKEN = '775904736:AAEREmJL53OsDxrWKdjOs0lM2bR02IWdq4w'
+CHAT_ID = '90569499'
+
+def sendtelegram(buyer_name, amount):
+    message = '*'+buyer_name+'*' + ' has added a Taobao order of SGD ' + '*'+str(amount)+'*' + ' successfully.'
+    query = 'https://api.telegram.org/bot' + TOKEN + '/sendMessage?chat_id=' + CHAT_ID + '&parse_mode=Markdown&text=' + message
+    r = requests.get(query)
+    result = r.json()
+    api_result = result.get('ok')
+    return api_result
 
 @app.route("/")
 @app.route("/index")
@@ -71,6 +83,11 @@ def add_order():
         db.session.add(order)
         db.session.commit()
         flash("Order added")
+        api_result = sendtelegram(buyer.name, form.amount.data)
+        if api_result is True:
+            flash("Sent telegram message successfully", 'success')
+        else:
+            flash("Error sending telegram message", 'danger')
     return render_template('add_order.html', form=form)
 
 @app.route("/edit/<id>", methods=['GET', 'POST'])
