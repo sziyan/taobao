@@ -19,8 +19,8 @@ def sendtelegram(buyer_name, amount):
 @app.route("/")
 @app.route("/index")
 def index():
-    orders = Orders.query.all()
-    return render_template('index.html',orders=orders)
+    all_orders = Orders.query.order_by(Orders.id.desc()).all()
+    return render_template('index.html',orders=all_orders)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -129,7 +129,7 @@ def edit(id):
 @login_required
 def orders():
     user = User.query.filter_by(username=current_user.username).first()
-    buyer_orders = user.orders
+    buyer_orders = user.orders.order_by(Orders.id.desc()).all()
     return render_template('orders.html',orders=buyer_orders)
 
 @app.route("/admin", methods=['GET', 'POST'])
