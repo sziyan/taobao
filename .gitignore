@@ -1,2 +1,3 @@
 venv/ 
 taobao.db
+__pycache__
