@@ -48,13 +48,17 @@
 {% endif %}
 
 <hr>
+{%if current_user.is_authenticated %}
 <div id="update_forms">
 <p>
-  <button class="btn btn-success" type="button" data-toggle="collapse" data-target="#shipping_form" aria-expanded="false" aria-controls="delete_order">
+  <button class="btn btn-success" type="button" data-toggle="collapse" data-target="#shipping_form" aria-expanded="false" aria-controls="shipping_form">
     Update Shipping Info
   </button>
-<button class="btn btn-success" type="button" data-toggle="collapse" data-target="#order_form" aria-expanded="false" aria-controls="delete_order">
+<button class="btn btn-success" type="button" data-toggle="collapse" data-target="#order_form" aria-expanded="false" aria-controls="order_form">
   Update Order Info
+</button>
+<button class="btn btn-success" type="button" data-toggle="collapse" data-target="#update_items" aria-expanded="false" aria-controls="update_items">
+  Update Items
 </button>
 </p>
 
@@ -71,12 +75,12 @@
   </div>
 
   <div class="form-group">
-    <label for="ship_amount">{{ form.ship_amount.label }}</label>
+    <b><label for="ship_amount">{{ form.ship_amount.label }}</label></b>
     {{ form.ship_amount(class="form-control col-sm-4",id="ship_amount") }}
   </div>
 
   <div class="form-group">
-    <label for="ship_status">{{ form.ship_status.label }}</label>
+    <b><label for="ship_status">{{ form.ship_status.label }}</label></b>
     {{ form.ship_status(class="form-control col-sm-4",id="ship_status") }}
   </div>
   {{form.shipping_submit(class="btn btn-primary")}}
@@ -91,19 +95,47 @@
 
   {{ order_form.hidden_tag() }}
   <div class="form-group">
-    <label for="amount">{{order_form.amount.label}}</label>
+    <b><label for="amount">{{order_form.amount.label}}</label></b>
     {{order_form.amount(class="form-control col-sm-4",id="amount")}}
   </div>
 
   <div class="form-group">
-    <label for="order_status">{{order_form.order_status.label}}</label>
+    <b><label for="order_status">{{order_form.order_status.label}}</label></b>
     {{order_form.order_status(class="form-control col-sm-4",id="order_status")}}
   </div>
 {{order_form.order_submit(class="btn btn-primary")}}
 </form>
 </div>
 </div>
+
+<!-- Update Items form -->
+<div class="collapse" id="update_items" data-parent="#update_forms">
+  <div class="card card-body">
+    <form action="" method="post">
+
+      {{ add_item_form.hidden_tag() }}
+
+      <div class="form-group">
+        <b><label for="amount_update">{{add_item_form.amount.label}}</label></b>
+        {{add_item_form.amount(class="form-control col-sm-4",id="amount_update")}}
+      </div>
+
+      <div class="form-group">
+        <b><label for="operators">{{add_item_form.operators.label}}</label></b>
+        {{add_item_form.operators(class="form-control col-sm-4",id="operators")}}
+      </div>
+      {{add_item_form.add_items_submit(class="btn btn-primary")}}
+  </div>
 </div>
+
+
+
+</div>
+{% else %}
+<div class="alert alert-danger" role="alert">
+  Log in to make changes to this order.
+</div>
+{% endif %}
 <br>
 {% with messages = get_flashed_messages() %}
 {% if messages %}

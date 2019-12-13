@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, IntegerField, DecimalField, SubmitField, SelectField
+from wtforms import StringField, PasswordField, IntegerField, DecimalField, SubmitField, SelectField, FloatField
 from wtforms.validators import InputRequired,Optional
 from app.models import User
 
@@ -9,7 +9,7 @@ class LoginForm(FlaskForm):
     login_submit = SubmitField('Sign In')
 
 class OrderForm(FlaskForm):
-    amount = DecimalField("Amount(SGD)", validators=[Optional()])
+    amount = FloatField("Amount(SGD)", validators=[Optional()])
     order_status = SelectField(u'Status', choices=[('paid', 'Paid'), ('not_paid', 'Not Paid')], validators=[Optional()])
     buyer = SelectField(u'Buyer', choices=[], validators=[Optional()])
     order_submit = SubmitField('Add Order')
@@ -25,7 +25,7 @@ class OrderForm(FlaskForm):
 
 class ShippingForm(FlaskForm):
     order_id = IntegerField("Order Number", validators=[Optional()])
-    ship_amount = DecimalField("Shipping Amount(SGD)", validators=[Optional()])
+    ship_amount = FloatField("Shipping Amount(SGD)", validators=[Optional()])
     ship_status = SelectField(u'Shipping Status', choices=[('paid', 'Paid'), ('not_paid', 'Not Paid')], validators=[Optional()])
     shipping_submit = SubmitField('Add Shipment Info')
 
@@ -72,4 +72,9 @@ class AddUser(FlaskForm):
     add_user_submit = SubmitField('Add User')
 
 class DeleteOrderForm(FlaskForm):
-    delete_order_submit = SubmitField("Delete this order")
+    delete_order_submit = SubmitField("Confirm")
+
+class AddItemsForm(FlaskForm):
+    amount = FloatField("Amount(SGD)", validators=[Optional()])
+    operators = SelectField("Items", choices=[('add', 'Add'), ('deduct', 'Deduct')], validators=[Optional()])
+    add_items_submit = SubmitField("Update Order")

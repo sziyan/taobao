@@ -1,6 +1,6 @@
 from app import app, db
 from flask import render_template,redirect, url_for, flash
-from app.forms import LoginForm, OrderForm, RegisterForm, ShippingForm, AddUser, EditUserForm, DeleteUserForm, DeleteOrderForm
+from app.forms import LoginForm, OrderForm, RegisterForm, ShippingForm, AddUser, EditUserForm, DeleteUserForm, DeleteOrderForm, AddItemsForm
 from flask_login import current_user, login_user,login_required,logout_user
 from app.models import User, Orders
 import requests
@@ -8,8 +8,10 @@ import requests
 TOKEN = '775904736:AAEREmJL53OsDxrWKdjOs0lM2bR02IWdq4w'
 CHAT_ID = '90569499'
 
-def sendtelegram(buyer_name, amount):
-    message = '*'+buyer_name+'*' + ' has added a Taobao order of SGD ' + '*'+str(amount)+'*' + ' successfully.'
+def sendtelegram(buyer_name, order):
+    amount = order.amount
+    status = order.order_status
+    message = '*'+buyer_name+'*' + ' has added a Taobao order of SGD ' + '*'+str(amount)+'*' + ' successfully. \n*Order Status:* ' + status
     query = 'https://api.telegram.org/bot' + TOKEN + '/sendMessage?chat_id=' + CHAT_ID + '&parse_mode=Markdown&text=' + message
     r = requests.get(query)
     result = r.json()
@@ -82,8 +84,8 @@ def add_order():
         order = Orders(amount=form.amount.data, order_status=order_status, buyer=buyer)
         db.session.add(order)
         db.session.commit()
-        flash("Order added")
-        api_result = sendtelegram(buyer.name, form.amount.data)
+        api_result = sendtelegram(buyer.name, order)
+        flash("Order added.", "success")
         if api_result is True:
             flash("Sent telegram message successfully", 'success')
         else:
@@ -97,6 +99,7 @@ def edit(id):
     form = ShippingForm()
     delete_order_form = DeleteOrderForm()
     order_form = OrderForm()
+    add_item_form = AddItemsForm()
 
     ship_status = dict(form.ship_status.choices).get(form.ship_status.data)
 
@@ -122,8 +125,17 @@ def edit(id):
         db.session.commit()
         flash("Order details updated", "success")
         return redirect(url_for("edit",id=id))
-
-    return render_template('edit.html', order=order, form=form, delete_order_form=delete_order_form,order_form=order_form)
+    if add_item_form.add_items_submit.data and add_item_form.validate():
+        if add_item_form.amount is not None:
+            operators = add_item_form.operators.data
+            if operators == 'add':
+                order.amount += add_item_form.amount.data
+            elif operators == 'deduct':
+                order.amount -= add_item_form.amount.data
+        db.session.commit()
+        flash("Order amount updated", "success")
+        return redirect(url_for('edit', id=id))
+    return render_template('edit.html', order=order, form=form, delete_order_form=delete_order_form,order_form=order_form, add_item_form=add_item_form)
 
 @app.route("/orders")
 @login_required
