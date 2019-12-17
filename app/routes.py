@@ -6,12 +6,13 @@ from app.models import User, Orders
 import requests
 #from app.telegram import test
 TOKEN = '775904736:AAEREmJL53OsDxrWKdjOs0lM2bR02IWdq4w'
-CHAT_ID = '90569499'
+#CHAT_ID = '90569499' #private with zy
+CHAT_ID = '-204286065' #taobao inc
 
-def sendtelegram(buyer_name, order):
-    amount = order.amount
-    status = order.order_status
-    message = '*'+buyer_name+'*' + ' has added a Taobao order of SGD ' + '*'+str(amount)+'*' + ' successfully. \n*Order Status:* ' + status
+def sendtelegram(message):
+    # amount = order.amount
+    # status = order.order_status
+    # message = '*'+buyer_name+'*' + ' has added a Taobao order of SGD ' + '*'+str(amount)+'*' + ' successfully. \n*Order Status:* ' + status
     query = 'https://api.telegram.org/bot' + TOKEN + '/sendMessage?chat_id=' + CHAT_ID + '&parse_mode=Markdown&text=' + message
     r = requests.get(query)
     result = r.json()
@@ -84,7 +85,9 @@ def add_order():
         order = Orders(amount=form.amount.data, order_status=order_status, buyer=buyer)
         db.session.add(order)
         db.session.commit()
-        api_result = sendtelegram(buyer.name, order)
+        message = "*{}'s* Taobao order of SGD *{}* has been added.".format(order.buyer.name,order.amount)
+        #message = '*' + buyer_name + '*' + ' has added a Taobao order of SGD ' + '*' + str(amount) + '*' + ' successfully. \n*Order Status:* ' + status
+        api_result = sendtelegram(message)
         flash("Order added.", "success")
         if api_result is True:
             flash("Sent telegram message successfully", 'success')
@@ -106,6 +109,16 @@ def edit(id):
     if form.shipping_submit.data and form.validate():
         if form.order_id.data is not None:
             order.order_id = form.order_id.data
+            if order.ship_amount is None:
+                order.ship_amount = form.ship_amount.data
+                total = order.amount + order.ship_amount
+                if order.order_status == 'Paid':
+                    due = order.ship_amount
+                else:
+                    due = total
+                message = "*{}'s* order has been shipped out. \n*Total:* {} \n*Due:* {} \n*Items(SGD):* {} \n*Status:* {} \n*Shipping(SGD):* {} \n*Shipping Status:* {}".format(order.buyer.name, total, due, order.amount, order.order_status, order.ship_amount,ship_status)
+                print(message)
+                sendtelegram(message)
         if form.ship_amount.data is not None:
             order.ship_amount = form.ship_amount.data
         if form.ship_status.data is not None:
@@ -135,6 +148,15 @@ def edit(id):
         db.session.commit()
         flash("Order amount updated", "success")
         return redirect(url_for('edit', id=id))
+    if (order.order_id and order.ship_amount) is not None and form.validate() and form.shipping_submit.data:
+        total = order.amount + order.ship_amount
+        if order.amount == 'Paid':
+            due = order.ship_amount
+        else:
+            due = total
+        message = "*{}'s* order has been shipped out. \n*Total:* {} \n*Due:* {} \n*Order:* {} \n*Status:* {} \n*Shipping:* {} \n*Shipping Status:* {}".format(order.buyer.name,total,due,order.amount,order.order_status,order.ship_amount,order.ship_status)
+        sendtelegram(message)
+
     return render_template('edit.html', order=order, form=form, delete_order_form=delete_order_form,order_form=order_form, add_item_form=add_item_form)
 
 @app.route("/orders")
