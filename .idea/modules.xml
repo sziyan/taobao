@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../../../Telegram/mhw-telegram/mhwdb-telegram/.idea/mhw.iml" filepath="$PROJECT_DIR$/../../../Telegram/mhw-telegram/mhwdb-telegram/.idea/mhw.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../../Telegram/mhworlddata/.idea/mhworlddata.iml" filepath="$PROJECT_DIR$/../../../Telegram/mhworlddata/.idea/mhworlddata.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/taobao.iml" filepath="$PROJECT_DIR$/.idea/taobao.iml" />
     </modules>
   </component>
