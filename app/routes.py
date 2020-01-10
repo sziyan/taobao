@@ -6,8 +6,8 @@ from app.models import User, Orders
 import requests
 #from app.telegram import test
 TOKEN = '775904736:AAEREmJL53OsDxrWKdjOs0lM2bR02IWdq4w'
-#CHAT_ID = '90569499' #private with zy
-CHAT_ID = '-204286065' #taobao inc
+CHAT_ID = '90569499' #private with zy
+#CHAT_ID = '-204286065' #taobao inc
 
 def sendtelegram(message):
     # amount = order.amount
